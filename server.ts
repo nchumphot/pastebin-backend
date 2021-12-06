@@ -31,13 +31,20 @@ async function clientConnect() {
 clientConnect();
 
 app.get("/pastes", async (req, res) => {
-  const dbres = await client.query("SELECT * FROM pastes");
+  const dbres = await client.query("SELECT * FROM pastes;");
+  res.json(dbres.rows);
+});
+
+app.get("/pastes/recent", async (req, res) => {
+  const dbres = await client.query(
+    "SELECT * FROM pastes ORDER BY creation_date DESC LIMIT 10;"
+  );
   res.json(dbres.rows);
 });
 
 app.get<{ id: number }>("/pastes/:id", async (req, res) => {
   const id = req.params.id;
-  const dbres = await client.query("SELECT * FROM pastes WHERE id = $1", [id]);
+  const dbres = await client.query("SELECT * FROM pastes WHERE id = $1;", [id]);
   if (dbres.rowCount !== 0) {
     res.status(200).json(dbres.rows);
   } else {
