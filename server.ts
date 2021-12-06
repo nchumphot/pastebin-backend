@@ -54,6 +54,24 @@ app.get<{ id: number }>("/pastes/:id", async (req, res) => {
   }
 });
 
+app.post("/pastes", async (req, res) => {
+  let { title, body } = req.body;
+  if (title === "") {
+    title = null;
+  }
+  if (body !== "") {
+    const dbres = await client.query(
+      "INSERT INTO pastes (title, body) VALUES ($1,$2) RETURNING *;",
+      [title, body]
+    );
+    res.status(201).json(dbres.rows);
+  } else {
+    res.status(400).json({
+      status: "cannot submit an empty body",
+    });
+  }
+});
+
 //Start the server on the given port
 const port = process.env.PORT;
 if (!port) {
