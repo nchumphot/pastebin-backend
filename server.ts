@@ -61,6 +61,7 @@ app.get<{ id: number }>("/pastes/:id", async (req, res) => {
   } else {
     res.status(404).json({
       status: "Failed",
+      data: [],
       message: `There is no paste with ID ${id}.`,
     });
   }
